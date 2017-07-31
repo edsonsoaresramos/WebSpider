@@ -19,7 +19,7 @@ def spiderWord():
 
     options = Options()
     #options.add_argument("--headless")
-    driver = webdriver.Chrome(executable_path=os.path.abspath("/home/edson/PycharmProjects/WebSpider/chromedriver"),   chrome_options=options)
+    driver = webdriver.Chrome(executable_path=os.path.abspath("/Users/edsonsoares/PycharmProjects/WebSpider/chromedriver"),   chrome_options=options)
     driver.implicitly_wait(40)
     driver.get(url)
 
@@ -35,13 +35,15 @@ def spiderWord():
 
     dataAtual = '21/07/2017'
 
-    if data.text != dataAtual:
+    if data.text == dataAtual:
         msg = 'Foi encontrada uma alteração no Processo: ' + data.text + '\n\n' + movimento.text + ' \n\nPágina TSJ: ' + '( ' + url + ' )'
         print(msg)
         dataAtual = data.text
         sendEmail(msg)
     else:
         print('*** Não foram encontradas alterações no Processo ***')
+
+    driver.close();
 
 def sendEmail(mensagem):
     SMTP_SERVER = 'smtp.gmail.com'
