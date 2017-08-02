@@ -10,6 +10,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.image import MIMEImage
 from email.mime.text import MIMEText
 from email.header import Header
+import time
 
 def spiderWord(email, urlProcesso):
     url = urlProcesso
@@ -58,8 +59,7 @@ def spiderWord(email, urlProcesso):
     file.close()
     driver.close()
 
-def spiderWord2(dataProcura, email, urlProcesso):
-    url = urlProcesso
+def spiderWord2(url, email, nuProcesso, codigo):
     response = requests.get(url, verify=False)
     texto = response.text
     soup = BeautifulSoup(texto)
@@ -67,21 +67,46 @@ def spiderWord2(dataProcura, email, urlProcesso):
     options = Options()
     #options.add_argument("--headless")
     driver = webdriver.Chrome(executable_path=os.path.abspath("/Users/edsonsoares/PycharmProjects/WebSpider/chromedriver"),   chrome_options=options)
-    driver.implicitly_wait(40)
     driver.get(url)
 
-    contrasena = driver.find_element_by_name('senhaProcesso')
-    contrasena.send_keys('kagheh')
+    nuProcessoTxt = driver.find_element_by_xpath('//*[@id="Processo"]')
+    nuProcessoTxt.send_keys(nuProcesso)
 
-    boton = driver.find_element_by_id('btEnviarSenha')
+    boton = driver.find_element_by_xpath('//*[@id="ConsultarProcessoButton"]')
+    boton.click()
+
+    #Muda para a nova janela do processo para entrar a senha
+    for winHandle in driver.window_handles:
+        driver.switch_to.window(winHandle)
+
+    print("dsghdfkjghdbgjkdf" + str(driver.window_handles[-1]))
+
+
+    contrasena = driver.find_element_by_xpath('//*[@id="popupSenha"]/table/tbody/tr[5]/td[2]/input[1]')
+    contrasena.send_keys(codigo)
+
+    boton = driver.find_element_by_xpath('//*[@id="btEnviarSenha"]')
     boton.click()
 
     data = driver.find_element_by_xpath('//*[@id="tabelaUltimasMovimentacoes"]/tbody/tr[1]/td[1]')
     movimento = driver.find_element_by_xpath('//*[@id="tabelaUltimasMovimentacoes"]/tbody/tr[1]/td[3]')
 
-    dataAtual = dataProcura
+    atualizado = False
 
-    if data.text == dataAtual:
+    if os.path.isfile('dataText.txt'):
+        file = open("dataText.txt", "r+")
+        dtTmp = file.read()
+        if data.text > dtTmp:
+            atualizado = True
+            file.seek(0)
+            file.truncate()
+            file.write(data.text)
+    else:
+        file = open("dataText.txt", "w")
+        file.write(data.text)
+        atualizado = True
+
+    if atualizado:
         msg = 'Foi encontrada uma alteração no Processo: ' + data.text + '\n\n' + movimento.text + ' \n\nPágina TSJ: ' + '( ' + url + ' )'
         print(msg)
         dataAtual = data.text
@@ -89,6 +114,7 @@ def spiderWord2(dataProcura, email, urlProcesso):
     else:
         print('*** Não foram encontradas alterações no Processo ***')
 
+    file.close()
     driver.close()
 
 
@@ -117,4 +143,5 @@ def sendEmail(mensagem, email):
     session.sendmail(sender, recipient, msg.as_string())
     session.quit()
 
-spiderWord('edson.soares.r@gmail.com', 'https://esaj.tjsp.jus.br/cpopg/show.do?processo.foro=477&processo.codigo=D90003CRD0000')
+#spiderWord('edson.soares.r@gmail.com', 'https://esaj.tjsp.jus.br/cpopg/show.do?processo.foro=477&processo.codigo=D90003CRD0000')
+spiderWord2('http://www.tjsp.jus.br/', 'edson.soares.r@gmail.com', '10195165720168260477', 'kagheh')
