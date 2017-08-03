@@ -12,7 +12,7 @@ from email.mime.text import MIMEText
 from email.header import Header
 import time
 
-def spiderWord(email, urlProcesso):
+def spiderWord2(email, urlProcesso):
     url = urlProcesso
     response = requests.get(url, verify=False)
     texto = response.text
@@ -59,7 +59,7 @@ def spiderWord(email, urlProcesso):
     file.close()
     driver.close()
 
-def spiderWord2(email, nuProcesso, codigo):
+def spiderWord(email, nuProcesso, codigo):
     url = 'http://www.tjsp.jus.br/'
     response = requests.get(url, verify=False)
     texto = response.text
@@ -141,5 +141,5 @@ def sendEmail(mensagem, email):
     session.sendmail(sender, recipient, msg.as_string())
     session.quit()
 
-#spiderWord('edson.soares.r@gmail.com', 'https://esaj.tjsp.jus.br/cpopg/show.do?processo.foro=477&processo.codigo=D90003CRD0000')
-spiderWord2('edson.soares.r@gmail.com', '10195165720168260477', 'kagheh')
+#spiderWord2('edson.soares.r@gmail.com', 'https://esaj.tjsp.jus.br/cpopg/show.do?processo.foro=477&processo.codigo=D90003CRD0000')
+spiderWord('edson.soares.r@gmail.com', '10195165720168260477', 'kagheh')
