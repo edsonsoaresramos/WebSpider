@@ -59,7 +59,8 @@ def spiderWord(email, urlProcesso):
     file.close()
     driver.close()
 
-def spiderWord2(url, email, nuProcesso, codigo):
+def spiderWord2(email, nuProcesso, codigo):
+    url = 'http://www.tjsp.jus.br/'
     response = requests.get(url, verify=False)
     texto = response.text
     soup = BeautifulSoup(texto)
@@ -76,11 +77,8 @@ def spiderWord2(url, email, nuProcesso, codigo):
     boton.click()
 
     #Muda para a nova janela do processo para entrar a senha
-    for winHandle in driver.window_handles:
-        driver.switch_to.window(winHandle)
-
-    print("dsghdfkjghdbgjkdf" + str(driver.window_handles[-1]))
-
+    time.sleep(5)
+    driver.switch_to.window(driver.window_handles[-1])
 
     contrasena = driver.find_element_by_xpath('//*[@id="popupSenha"]/table/tbody/tr[5]/td[2]/input[1]')
     contrasena.send_keys(codigo)
@@ -144,4 +142,4 @@ def sendEmail(mensagem, email):
     session.quit()
 
 #spiderWord('edson.soares.r@gmail.com', 'https://esaj.tjsp.jus.br/cpopg/show.do?processo.foro=477&processo.codigo=D90003CRD0000')
-spiderWord2('http://www.tjsp.jus.br/', 'edson.soares.r@gmail.com', '10195165720168260477', 'kagheh')
+spiderWord2('edson.soares.r@gmail.com', '10195165720168260477', 'kagheh')
