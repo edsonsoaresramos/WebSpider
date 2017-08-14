@@ -25,7 +25,7 @@ def spiderWord2(email, urlProcesso):
     driver.get(url)
 
     contrasena = driver.find_element_by_name('senhaProcesso')
-    contrasena.send_keys('kagheh')
+    contrasena.send_keys(codigo)
 
     boton = driver.find_element_by_id('btEnviarSenha')
     boton.click()
@@ -59,7 +59,7 @@ def spiderWord2(email, urlProcesso):
     file.close()
     driver.close()
 
-def spiderWord(email, nuProcesso, codigo):
+def spiderWord(email, nuProcesso, codigo, emailPwd):
     url = 'http://www.tjsp.jus.br/'
     response = requests.get(url, verify=False)
     texto = response.text
@@ -108,7 +108,7 @@ def spiderWord(email, nuProcesso, codigo):
         msg = 'Foi encontrada uma alteração no Processo: ' + data.text + '\n\n' + movimento.text + ' \n\nPágina TSJ: ' + '( ' + url + ' )'
         print(msg)
         dataAtual = data.text
-        sendEmail(msg, email)
+        sendEmail(msg, email, emailPwd)
     else:
         print('*** Não foram encontradas alterações no Processo ***')
 
@@ -116,12 +116,12 @@ def spiderWord(email, nuProcesso, codigo):
     driver.close()
 
 
-def sendEmail(mensagem, email):
+def sendEmail(mensagem, email. emailPwd):
     SMTP_SERVER = 'smtp.gmail.com'
     SMTP_PORT = 587
 
     sender = 'r3im0z@gmail.com'
-    password = "50p#1414"
+    password = emailPwd
     recipient = email
     subject = 'Alteração no Processo'
 
@@ -141,5 +141,3 @@ def sendEmail(mensagem, email):
     session.sendmail(sender, recipient, msg.as_string())
     session.quit()
 
-#spiderWord2('edson.soares.r@gmail.com', 'https://esaj.tjsp.jus.br/cpopg/show.do?processo.foro=477&processo.codigo=D90003CRD0000')
-spiderWord('edson.soares.r@gmail.com', '10195165720168260477', 'kagheh')
